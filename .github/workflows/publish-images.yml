@@ -15,6 +15,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Show workspace contents (diagnostic)
+        run: |
+          echo "Listing repository root"
+          ls -la
+          echo "Listing backend dir"
+          ls -la backend || true
+          echo "Listing frontend dir"
+          ls -la frontend || true
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -28,7 +39,7 @@ jobs:
       - name: Build and push backend image
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: ./backend
           file: ./backend/Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/mi-asistente-ia-backend:latest
@@ -36,7 +47,7 @@ jobs:
       - name: Build and push frontend image
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: ./frontend
           file: ./frontend/Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/mi-asistente-ia-frontend:latest
